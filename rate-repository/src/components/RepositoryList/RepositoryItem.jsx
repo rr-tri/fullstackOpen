@@ -57,17 +57,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
+export const convertToK = (value) => {
+  if (value >= 1000) {
+    const result = value / 1000;
+    return result.toFixed(1) + "k";
+  }
+  return value;
+};
 const RepositoryItem = ({ item }) => {
-  const convertToK = (value) => {
-    if (value >= 1000) {
-      const result = value / 1000;
-      return result.toFixed(1) + "k";
-    }
-    return value;
-  };
   return (
-    <View style={styles.container}>
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.containerU}>
         <Image
           style={styles.userPhoto}
@@ -77,28 +76,42 @@ const RepositoryItem = ({ item }) => {
         />
 
         <View style={styles.container1r}>
-          <Text style={styles.name}>{item.fullName}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text testID="repositoryName" style={styles.name}>
+            {item.fullName}
+          </Text>
+          <Text testID="repositoryDescription" style={styles.description}>
+            {item.description}
+          </Text>
         </View>
       </View>
       <View style={styles.containerM}>
-        <Text style={styles.language}>{item.language}</Text>
+        <Text testID="repositoryLanguage" style={styles.language}>
+          {item.language}
+        </Text>
       </View>
       <View style={styles.containerB}>
         <View style={styles.countItems}>
-          <Text style={styles.count}>{convertToK(item.stargazersCount)}</Text>
+          <Text testID="repositoryStarGazers" style={styles.count}>
+            {convertToK(item.stargazersCount)}
+          </Text>
           <Text style={styles.description}>Stars</Text>
         </View>
         <View style={styles.countItems}>
-          <Text style={styles.count}>{convertToK(item.forksCount)}</Text>
+          <Text testID="repositoryForksCount" style={styles.count}>
+            {convertToK(item.forksCount)}
+          </Text>
           <Text style={styles.description}>Forks</Text>
         </View>
         <View style={styles.countItems}>
-          <Text style={styles.count}>{convertToK(item.reviewCount)}</Text>
+          <Text testID="repositoryReviewCount" style={styles.count}>
+            {convertToK(item.reviewCount)}
+          </Text>
           <Text style={styles.description}>Reviews</Text>
         </View>
         <View style={styles.countItems}>
-          <Text style={styles.count}>{convertToK(item.ratingAverage)}</Text>
+          <Text testID="repositoryRatingAverage" style={styles.count}>
+            {convertToK(item.ratingAverage)}
+          </Text>
           <Text style={styles.description}>Rating</Text>
         </View>
       </View>
