@@ -1,37 +1,90 @@
-import { FlatList, View, StyleSheet } from "react-native";
-import { useQuery } from "@apollo/client";
+import React, { useState, useCallback } from "react";
+import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import Constants from "expo-constants";
 
-import RepositoryItem from "./RepositoryItem";
-import { GET_REPOSITORIES } from "../../graphql/queries";
+import useRepositories from "../../hooks/useRepositories";
+import RepositoryListHeader from "./RepositoryListHeader";
+import { useDebounce } from "use-debounce";
+import RepositoryInfo from "./RepositoryInfo";
 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
   },
+  container: {
+    margin: 5,
+    marginBottom: Constants.statusBarHeight + 90,
+  },
 });
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({ repositories }) => {
-  const repositoryNodes = repositories
+export const RepositoryListContainer = ({
+  repositories,
+  setOrderBy,
+  setOrderDirection,
+  searchQuery,
+  setSearchQuery,
+  onEndReach,
+}) => {
+  const repositoriesNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
-  const renderItem = ({ item }) => <RepositoryItem item={item} />;
+  // console.log(repositoriesNodes[0]);
   return (
-    <FlatList
-      data={repositoryNodes}
-      renderItem={renderItem}
-      ItemSeparatorComponent={ItemSeparator}
-      keyExtractor={(item) => item.id}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={repositoriesNodes}
+        renderItem={({ item }) => (
+          <RepositoryInfo item={item} showButton={false} />
+        )}
+        ItemSeparatorComponent={ItemSeparator}
+        keyExtractor={(item) => item.id}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={
+          <RepositoryListHeader
+            setOrderBy={setOrderBy}
+            setOrderDirection={setOrderDirection}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        }
+      />
+    </View>
   );
 };
 
 const RepositoryList = () => {
-  const { data, error, loading } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: "cache-and-network",
+  const [orderBy, setOrderBy] = useState("CREATED_AT");
+  const [orderDirection, setOrderDirection] = useState("DESC");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [value] = useDebounce(
+    searchQuery,
+    500 // Debounce time in milliseconds
+  );
+
+  const { repositories, loading, handleFetchMore } = useRepositories({
+    first: 7,
+    orderBy,
+    orderDirection,
+    searchQuery: value,
+    after: "",
   });
 
-  return <RepositoryListContainer repositories={data?.repositories} />;
+  const onEndReach = () => {
+    handleFetchMore();
+  };
+
+  return (
+    <RepositoryListContainer
+      repositories={repositories}
+      setOrderBy={setOrderBy}
+      setOrderDirection={setOrderDirection}
+      onEndReach={onEndReach}
+      setSearchQuery={setSearchQuery}
+      searchQuery={searchQuery}
+    />
+  );
 };
 
 export default RepositoryList;

@@ -1,34 +1,30 @@
-import { View, Button, StyleSheet } from "react-native";
-import FormikTextInput from "./FormikTextInput";
+import { View, StyleSheet } from "react-native";
+import FormikTextInput from "../FormikInput/FormikTextInput";
+import Button from "../Button";
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  inputContainer: {
     paddingTop: 20,
-    backgroundColor: "#ecf0f1",
-    padding: 8,
+    padding: 15,
   },
-  title: {
-    margin: 24,
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+  container: {},
 });
 
 const SignInForm = ({ handleSubmit }) => {
   return (
     <View style={styles?.container}>
-      <FormikTextInput
-        testID="usernameField"
-        name="username"
-        placeholder="Username"
-      />
-      <FormikTextInput
-        testID="passwordField"
-        name="password"
-        placeholder="Password"
-        secureTextEntry
-      />
+      <View style={styles?.inputContainer}>
+        <FormikTextInput
+          testID="usernameField"
+          name="username"
+          placeholder="Username"
+        />
+        <FormikTextInput
+          testID="passwordField"
+          name="password"
+          placeholder="Password"
+          secureTextEntry
+        />
+      </View>
       <Button testID="submitButton" onPress={handleSubmit} title="Sign in" />
     </View>
   );

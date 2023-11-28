@@ -10,26 +10,22 @@ import Text from "../Text";
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Constants.statusBarHeight,
+    paddingTop: Constants.statusBarHeight + 30,
     backgroundColor: "#24292e",
     paddingBottom: 10,
-  },
-  tabMenu: {
-    color: "rgb(255,255,255)",
-    fontSize: 20,
-    paddingLeft: 10,
   },
 });
 
 const AppBar = () => {
   const authStorage = useAuthStorage();
   const apolloClient = useApolloClient();
+
   const { data, error, loading } = useQuery(ME, {
     fetchPolicy: "cache-and-network",
   });
-  // if (loading) {
-  //   return null;
-  // }
+  if (loading) {
+    return null;
+  }
 
   const handlePress = async () => {
     await authStorage.removeAccessToken();
@@ -39,10 +35,18 @@ const AppBar = () => {
     <View style={styles.container}>
       <ScrollView horizontal>
         <AppBarTab name="Repositories" link="/" />
+
         {!data?.me ? (
-          <AppBarTab name="Sign in" link="/sign-in" />
+          <>
+            <AppBarTab name="Sign in" link="/sign-in" />
+            <AppBarTab name="Sign up" link="/sign-up" />
+          </>
         ) : (
-          <AppBarTab name="Sign out" link="/" fn={handlePress} />
+          <>
+            <AppBarTab name="Create a review" link={"/create-review"} />
+            <AppBarTab name="My reviews" link={"/my-review"} />
+            <AppBarTab name="Sign out" link={"/"} fn={handlePress} />
+          </>
         )}
       </ScrollView>
     </View>

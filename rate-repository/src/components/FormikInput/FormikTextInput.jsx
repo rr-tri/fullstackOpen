@@ -5,17 +5,19 @@ import TextInput from "./TextInput";
 import Text from "../Text";
 const styles = StyleSheet.create({
   errorText: {
-    marginBottom: 15,
+    marginBottom: 5,
     color: "#d73a4a",
   },
   input: {
     height: 50,
-    paddingHorizontal: 8,
     width: "100%",
     borderColor: "#afafaf",
+    paddingHorizontal: 10,
+    borderRadius: 5,
     borderWidth: 1,
     backgroundColor: "#fff",
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 20,
   },
 });
 const FormikTextInput = ({ name, ...props }) => {
